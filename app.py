@@ -5,7 +5,7 @@ from datetime import datetime
 # 1. THEMATIC STYLING & PAGE INITIALIZATION
 st.set_page_config(page_title="God's Herd / God se Kudde", page_icon="⛪", layout="wide")
 
-# Fixed styling loader for newer Streamlit/Python environments
+# Fixed styling loader for current Streamlit/Python environments
 st.markdown("""
     <style>
     .main { background-color: #fffaf5; }
