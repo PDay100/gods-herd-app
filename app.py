@@ -2,11 +2,10 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-# -----------------------------------------------------------------------------
-# 1. THEMATIC STYLING & PAGE INITIALIZATION (Kalahari Burnt Orange Aesthetic)
-# -----------------------------------------------------------------------------
+# 1. THEMATIC STYLING & PAGE INITIALIZATION
 st.set_page_config(page_title="God's Herd / God se Kudde", page_icon="⛪", layout="wide")
 
+# Fixed styling loader for newer Streamlit/Python environments
 st.markdown("""
     <style>
     .main { background-color: #fffaf5; }
@@ -22,17 +21,14 @@ st.markdown("""
     .stButton>button:hover { background-color: #c2410c; color: white; }
     .sidebar .sidebar-content { background-color: #ffedd5; }
     </style>
-""", unsafe_style_html=True)
+""", unsafe_allow_html=True)
 
-# -----------------------------------------------------------------------------
 # 2. SECURE ACCESS CONTROL & SESSION MANAGEMENT
-# -----------------------------------------------------------------------------
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.user_role = None
     st.session_state.user_fullname = ""
 
-# Archival Data Registry Initialization
 if 'members_archive' not in st.session_state:
     st.session_state.members_archive = pd.DataFrame([
         {"ID": 101, "First Name": "Johannes", "Last Name": "Willemse", "Wyk": "Kameelmond", "Status": "Belydende Lidmaat"},
@@ -40,15 +36,9 @@ if 'members_archive' not in st.session_state:
         {"ID": 103, "First Name": "Dean", "Last Name": "Willemse", "Wyk": "Central Town", "Status": "Dooplidmaat"}
     ])
 
-# Fetch secure administrator key from Streamlit Advanced Secrets
-try:
-    MASTER_PIN = st.secrets["MASTER_PIN"]
-except:
-    MASTER_PIN = "pete-master-admin"  # Backup fallback identifier
+MASTER_PIN = "pete-master-admin"
 
-# -----------------------------------------------------------------------------
 # 3. PORTAL ACCESSIBILITY GATEWAY (Login Screen)
-# -----------------------------------------------------------------------------
 if not st.session_state.logged_in:
     st.title("⛪ God's Herd / God se Kudde")
     st.subheader("Secure Church Management Gateway")
@@ -56,7 +46,6 @@ if not st.session_state.logged_in:
     
     st.markdown("### Access Authentication")
     
-    # Google Authentication Simulation Pipeline
     if st.button("🌐 Continue with Google Sign-In"):
         st.session_state.logged_in = True
         st.session_state.user_role = "member"
@@ -83,9 +72,7 @@ if not st.session_state.logged_in:
             
     st.stop()
 
-# -----------------------------------------------------------------------------
-# 4. APPLICATION CORE DASHBOARD (Post Authentication)
-# -----------------------------------------------------------------------------
+# 4. APPLICATION CORE DASHBOARD
 st.sidebar.markdown(f"### Logged in as:\n**{st.session_state.user_fullname}**")
 st.sidebar.markdown(f"Clearance Level: `{st.session_state.user_role.upper()}`")
 
@@ -105,7 +92,6 @@ if menu == "📢 Announcements":
 elif menu == "👥 Archive Registry":
     st.title("Church Archival Profile Registry")
     
-    # PERMISSION ROUTE A: VIEW-ONLY PERMISSIONS (Members / Elders)
     if st.session_state.user_role in ["member", "elder"]:
         st.warning("⚠️ SECURITY NOTICE: You have view-only access to this ledger. Data modifications are strictly restricted to the Master System Administrator.")
         
@@ -116,7 +102,6 @@ elif menu == "👥 Archive Registry":
             df = df[df.astype(str).apply(lambda x: x.str.contains(search_query, case=False)).any(axis=1)]
         st.dataframe(df, use_container_width=True)
 
-    # PERMISSION ROUTE B: MASTER ADMINISTRATIVE ACCESS ONLY (Pete)
     elif st.session_state.user_role == "master_admin":
         st.success("⚡ ADMINISTRATIVE CLEARANCE GRANTED: Full write capabilities unlocked.")
         
